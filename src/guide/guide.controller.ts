@@ -4,20 +4,24 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { CreateGuideDto } from './dto/create-guide.dto';
-import { UpdateGuideDto } from './dto/update-guide.dto';
+import {
+  CreateGuideDto,
+  GuideResponseDto,
+  UpdateGuideDto,
+} from './dto/guide.dto';
 import { GuideService } from './guide.service';
 
-@Controller('guide')
+@Controller('guides')
 export class GuideController {
-  constructor(private guideService: GuideService) {}
+  constructor(private readonly guideService: GuideService) {}
 
   @Post()
-  async create(@Body() createGuideDto: CreateGuideDto) {
-    this.guideService.create(createGuideDto);
+  async create(@Body() body: CreateGuideDto): Promise<GuideResponseDto> {
+    return this.guideService.create(body);
   }
 
   @Get()
@@ -26,20 +30,20 @@ export class GuideController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<string> {
-    return `This action returns a #${id} guide`;
+  async findOne(@Param('id') id: ParseUUIDPipe) {
+    return this.guideService.findOne(id);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: ParseUUIDPipe,
     @Body() updateGuideDto: UpdateGuideDto,
   ) {
     return `This action updates a #${id} guide`;
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: ParseUUIDPipe) {
     return `This action removes a #${id} guide`;
   }
 }
