@@ -30,20 +30,20 @@ export class GuideController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: ParseUUIDPipe) {
+  async findOneById(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.guideService.findOne(id);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: ParseUUIDPipe,
-    @Body() updateGuideDto: UpdateGuideDto,
-  ) {
-    return `This action updates a #${id} guide`;
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() body: UpdateGuideDto,
+  ): Promise<GuideResponseDto> {
+    return this.guideService.update(body, id);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: ParseUUIDPipe) {
-    return `This action removes a #${id} guide`;
+  async remove(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.guideService.delete(id);
   }
 }

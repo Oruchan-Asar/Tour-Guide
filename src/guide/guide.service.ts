@@ -4,6 +4,7 @@ import {
   CreateGuideDto,
   FindGuideResponseDto,
   GuideResponseDto,
+  UpdateGuideDto,
 } from './dto/guide.dto';
 import { v4 as uuid } from 'uuid';
 
@@ -26,5 +27,32 @@ export class GuideService {
     return this.guides;
   }
 
-  findOne(id: ParseUUIDPipe) {}
+  findOne(id: string): FindGuideResponseDto {
+    return this.guides.find((guide) => {
+      return guide.id === id;
+    });
+  }
+
+  update(payload: UpdateGuideDto, id: string): GuideResponseDto {
+    let updatedGuide: GuideResponseDto;
+
+    const updatedGuideList = this.guides.map((guide) => {
+      if (guide.id === id) {
+        updatedGuide = {
+          id,
+          ...payload,
+        };
+        return updatedGuide;
+      } else return guide;
+    });
+
+    this.guides = updatedGuideList;
+
+    return updatedGuide;
+  }
+
+  delete(id: string) {
+    const updatedGuideList = this.guides.filter((guide) => guide.id !== id);
+    return updatedGuideList;
+  }
 }
