@@ -1,17 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, Put } from '@nestjs/common';
 import { TravelerService } from './traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
 
-@Controller('traveler')
+@Controller('travelers')
 export class TravelerController {
   constructor(private readonly travelerService: TravelerService) {}
 
@@ -26,20 +18,17 @@ export class TravelerController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.travelerService.findOne(+id);
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    return this.travelerService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateTravelerDto: UpdateTravelerDto,
-  ) {
-    return this.travelerService.update(+id, updateTravelerDto);
+  @Put(':id')
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateTravelerDto: UpdateTravelerDto) {
+    return this.travelerService.update(id, updateTravelerDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.travelerService.remove(+id);
+    return this.travelerService.remove(id);
   }
 }
