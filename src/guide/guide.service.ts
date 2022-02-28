@@ -1,12 +1,10 @@
-import { Injectable, ParseUUIDPipe } from '@nestjs/common';
-import { guides } from 'src/db';
-import {
-  CreateGuideDto,
-  FindGuideResponseDto,
-  GuideResponseDto,
-  UpdateGuideDto,
-} from './dto/guide.dto';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
+import { guides } from 'src/db';
+import { CreateGuideDto } from './dto/create-guide.dto';
+import { GuideResponseDto } from './dto/guide-response.dto';
+import { UpdateGuideDto } from './dto/update-guide.dto';
+import { FindGuideResponseDto } from './dto/find-guide-response.dto';
 
 @Injectable()
 export class GuideService {
@@ -33,7 +31,7 @@ export class GuideService {
     });
   }
 
-  update(payload: UpdateGuideDto, id: string): GuideResponseDto {
+  update(id: string, payload: UpdateGuideDto): GuideResponseDto {
     let updatedGuide: GuideResponseDto;
 
     const updatedGuideList = this.guides.map((guide) => {
@@ -51,8 +49,8 @@ export class GuideService {
     return updatedGuide;
   }
 
-  delete(id: string) {
-    const updatedGuideList = this.guides.filter((guide) => guide.id !== id);
-    return updatedGuideList;
+  remove(id: string): GuideResponseDto[] {
+    this.guides = this.guides.filter((guide) => guide.id !== id);
+    return guides;
   }
 }
