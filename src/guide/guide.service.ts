@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { guides } from 'src/db';
 import { CreateGuideDto } from './dto/create-guide.dto';
@@ -26,27 +26,21 @@ export class GuideService {
   }
 
   findOne(id: string): FindGuideResponseDto {
-    return this.guides.find((guide) => {
+    const guide = this.guides.find((guide) => {
       return guide.id === id;
     });
+    if (!guide) throw NotFoundException;
+    return guide;
   }
 
   update(id: string, payload: UpdateGuideDto): GuideResponseDto {
-    let updatedGuide: GuideResponseDto;
+    const guideToUpdate = this.findOne(id);
 
-    const updatedGuideList = this.guides.map((guide) => {
-      if (guide.id === id) {
-        updatedGuide = {
-          id,
-          ...payload,
-        };
-        return updatedGuide;
-      } else return guide;
+    const indexOfGuide = guides.findIndex((guide) => guide.id === guideToUpdate.id);
+    return (guides[indexOfGuide] = {
+      id: id,
+      ...payload,
     });
-
-    this.guides = updatedGuideList;
-
-    return updatedGuide;
   }
 
   remove(id: string): GuideResponseDto[] {
