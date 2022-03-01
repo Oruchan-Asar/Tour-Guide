@@ -44,7 +44,9 @@ export class GuideService {
   }
 
   remove(id: string): GuideResponseDto[] {
-    this.guides = this.guides.filter((guide) => guide.id !== id);
+    const indexOfGuide = this.guides.findIndex((guide) => guide.id === id);
+
+    this.guides.splice(indexOfGuide, 1);
     return guides;
   }
 }

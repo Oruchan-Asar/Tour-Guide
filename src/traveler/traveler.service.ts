@@ -40,10 +40,9 @@ export class TravelerService {
   }
 
   remove(id: string) {
-    this.travelers = this.travelers.filter((traveler) => {
-      traveler.id !== id;
-    });
+    const indexOfTraveler = this.travelers.findIndex((traveler) => traveler.id === id);
 
+    this.travelers.splice(indexOfTraveler, 1);
     return travelers;
   }
 }
