@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, Put } from '
 import { GuideService } from './guide.service';
 import { CreateGuideDto } from './dto/create-guide.dto';
 import { UpdateGuideDto } from './dto/update-guide.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Guide')
 @Controller('guides')
 export class GuideController {
   constructor(private readonly guideService: GuideService) {}
@@ -28,7 +30,7 @@ export class GuideController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.guideService.remove(id);
   }
 }
