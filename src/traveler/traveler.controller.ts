@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, Put } from '
 import { TravelerService } from './traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
 import { UpdateTravelerDto } from './dto/update-traveler.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Traveler')
 @Controller('travelers')
 export class TravelerController {
   constructor(private readonly travelerService: TravelerService) {}
@@ -28,7 +30,7 @@ export class TravelerController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.travelerService.remove(id);
   }
 }
