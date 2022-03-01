@@ -1,4 +1,4 @@
-import { Injectable, PayloadTooLargeException } from '@nestjs/common';
+import { Injectable, NotFoundException, PayloadTooLargeException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { travelers } from 'src/db';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
@@ -25,26 +25,18 @@ export class TravelerService {
   }
 
   findOne(id: string) {
-    return this.travelers.filter((traveler) => traveler.id === id);
+    const traveler = this.travelers.find((traveler) => traveler.id === id);
+    if (!traveler) throw NotFoundException;
+    return traveler;
   }
 
   update(id: string, payload: UpdateTravelerDto) {
-    let updatedTraveler: TravelerResponseDto;
-
-    const updatedTravelerList = this.travelers.map((traveler) => {
-      if (traveler.id === id) {
-        updatedTraveler = {
-          id,
-          ...payload,
-        };
-
-        return updatedTraveler;
-      } else return traveler;
+    const travelerToUpdate = this.findOne(id);
+    const indexOfTraveler = travelers.findIndex((traveler) => (traveler.id = travelerToUpdate.id));
+    return (travelers[indexOfTraveler] = {
+      id: id,
+      ...payload,
     });
-
-    this.travelers = updatedTravelerList;
-
-    return updatedTraveler;
   }
 
   remove(id: string) {
