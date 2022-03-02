@@ -43,10 +43,12 @@ export class GuideService {
     });
   }
 
-  remove(id: string): GuideResponseDto[] {
+  remove(id: string) {
     const indexOfGuide = this.guides.findIndex((guide) => guide.id === id);
 
+    if (indexOfGuide === -1) throw NotFoundException;
+
     this.guides.splice(indexOfGuide, 1);
-    return guides;
+    return;
   }
 }

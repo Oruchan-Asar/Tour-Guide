@@ -42,6 +42,8 @@ export class TravelerService {
   remove(id: string) {
     const indexOfTraveler = this.travelers.findIndex((traveler) => traveler.id === id);
 
+    if (indexOfTraveler === -1) throw NotFoundException;
+
     this.travelers.splice(indexOfTraveler, 1);
     return travelers;
   }
