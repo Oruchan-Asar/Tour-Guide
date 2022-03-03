@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { guides } from 'src/db';
+import { guides, packages } from 'src/db';
 import { CreateGuideDto } from './dto/create-guide.dto';
-import { GuideResponseDto } from './dto/guide-response.dto';
+import { GuideResponseDto } from './dto/response-guide.dto';
 import { UpdateGuideDto } from './dto/update-guide.dto';
-import { FindGuideResponseDto } from './dto/find-guide-response.dto';
 
 @Injectable()
 export class GuideService {
   private guides = guides;
+  private packages = packages;
 
   create(payload: CreateGuideDto): GuideResponseDto {
     const newGuide = {
@@ -21,11 +21,11 @@ export class GuideService {
     return newGuide;
   }
 
-  findAll(): FindGuideResponseDto[] {
+  findAll(): GuideResponseDto[] {
     return this.guides;
   }
 
-  findOne(id: string): FindGuideResponseDto {
+  findOne(id: string): GuideResponseDto {
     const guide = this.guides.find((guide) => {
       return guide.id === id;
     });
@@ -49,6 +49,15 @@ export class GuideService {
     if (indexOfGuide === -1) throw NotFoundException;
 
     this.guides.splice(indexOfGuide, 1);
+
+    // DELETE PACKAGES OF GUIDE WHILE DELETING THE GUIDE
+    const length = this.packages.filter((p) => p.guideId === id).length;
+
+    for (let i = 0; i < length; i++) {
+      const indexOfPackage = this.packages.findIndex((p) => p.guideId === id);
+      packages.splice(indexOfPackage, 1);
+    }
+
     return;
   }
 }
