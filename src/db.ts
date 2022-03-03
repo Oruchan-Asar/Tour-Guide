@@ -70,3 +70,27 @@ export const travelers = [
     password: '6456454',
   },
 ];
+
+export const packages = [
+  {
+    id: '8b99cc2a-7613-4815-a496-59b0a29e5920',
+    title: 'Eiffel Tour',
+    description: 'See most beautiful side of the Paris',
+    price: 100,
+    guideId: '1c250754-b656-11eb-8529-0242ac130003',
+  },
+  {
+    id: 'c672be54-1d56-4a2a-b380-ef78d3cf657d',
+    title: 'Alanya Castle Tour',
+    description: '',
+    price: 200,
+    guideId: '1c2505d8-b656-11eb-8529-0242ac130003',
+  },
+  {
+    id: 'ebd154d8-84d1-40f4-8bd3-796c56bcdd07',
+    title: '',
+    description: '',
+    price: 150,
+    guideId: '1c250754-b656-11eb-8529-0242ac130003',
+  },
+];
