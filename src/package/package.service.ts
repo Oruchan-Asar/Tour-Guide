@@ -1,26 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { v4 as uuid } from 'uuid';
+import { packages } from 'src/db';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
+import { PackageResponseDto } from './dto/response-package.dto';
 
 @Injectable()
 export class PackageService {
-  create(createPackageDto: CreatePackageDto) {
-    return 'This action adds a new package';
+  private packages = packages;
+
+  create(guideId: string, payload: CreatePackageDto): CreatePackageDto {
+    const newPackage = {
+      id: uuid(),
+      ...payload,
+      guideId: guideId,
+    };
+
+    this.packages.push(newPackage);
+
+    return newPackage;
   }
 
-  findAll() {
-    return `This action returns all package`;
+  findAllByGuideId(guideId: string): PackageResponseDto[] {
+    return this.packages.filter((p) => p.guideId === guideId);
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} package`;
+  findOneByPackageId(packageId: string): PackageResponseDto {
+    const onePackage = this.packages.find((p) => p.id === packageId);
+
+    if (!onePackage) throw NotFoundException;
+
+    return onePackage;
   }
 
-  update(id: string, updatePackageDto: UpdatePackageDto) {
-    return `This action updates a #${id} package`;
+  async update(packageId: string, payload: UpdatePackageDto) {
+    const onePackage = await this.findOneByPackageId(packageId);
+
+    const newPackage = {
+      id: packageId,
+      ...payload,
+      guideId: onePackage.guideId,
+    };
+
+    const indexOfPackage = this.packages.findIndex((p) => p === onePackage);
+
+    packages[indexOfPackage] = newPackage;
+
+    return packages[indexOfPackage];
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} package`;
+  removeByPackageId(PackageId: string) {
+    const indexOfPackage = this.packages.findIndex((p) => p.id === PackageId);
+    packages.splice(indexOfPackage, 1);
   }
 }
