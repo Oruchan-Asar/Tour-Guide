@@ -24,14 +24,14 @@ export class TravelerService {
     return this.travelers;
   }
 
-  findOne(id: string) {
-    const traveler = this.travelers.find((traveler) => traveler.id === id);
+  async findOne(id: string): Promise<TravelerResponseDto> {
+    const traveler = await this.travelers.find((traveler) => traveler.id === id);
     if (!traveler) throw NotFoundException;
     return traveler;
   }
 
-  update(id: string, payload: UpdateTravelerDto) {
-    const travelerToUpdate = this.findOne(id);
+  async update(id: string, payload: UpdateTravelerDto): Promise<TravelerResponseDto> {
+    const travelerToUpdate = await this.findOne(id);
     const indexOfTraveler = travelers.findIndex((traveler) => (traveler.id = travelerToUpdate.id));
     return (travelers[indexOfTraveler] = {
       id: id,
@@ -39,12 +39,13 @@ export class TravelerService {
     });
   }
 
-  remove(id: string) {
-    const indexOfTraveler = this.travelers.findIndex((traveler) => traveler.id === id);
+  async remove(id: string) {
+    const indexOfTraveler = await this.travelers.findIndex((traveler) => traveler.id === id);
 
     if (indexOfTraveler === -1) throw NotFoundException;
 
     this.travelers.splice(indexOfTraveler, 1);
-    return travelers;
+
+    return;
   }
 }

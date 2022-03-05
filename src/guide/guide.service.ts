@@ -25,36 +25,36 @@ export class GuideService {
     return this.guides;
   }
 
-  findOne(id: string): GuideResponseDto {
-    const guide = this.guides.find((guide) => {
+  async findOne(id: string): Promise<GuideResponseDto> {
+    const guide = await this.guides.find((guide) => {
       return guide.id === id;
     });
     if (!guide) throw NotFoundException;
     return guide;
   }
 
-  update(id: string, payload: UpdateGuideDto): GuideResponseDto {
-    const guideToUpdate = this.findOne(id);
+  async update(id: string, payload: UpdateGuideDto): Promise<GuideResponseDto> {
+    const guideToUpdate = await this.findOne(id);
 
-    const indexOfGuide = guides.findIndex((guide) => guide.id === guideToUpdate.id);
+    const indexOfGuide = await guides.findIndex((guide) => guide.id === guideToUpdate.id);
     return (guides[indexOfGuide] = {
       id: id,
       ...payload,
     });
   }
 
-  remove(id: string) {
-    const indexOfGuide = this.guides.findIndex((guide) => guide.id === id);
+  async remove(id: string) {
+    const indexOfGuide = await this.guides.findIndex((guide) => guide.id === id);
 
     if (indexOfGuide === -1) throw NotFoundException;
 
     this.guides.splice(indexOfGuide, 1);
 
     // DELETE PACKAGES OF GUIDE WHILE DELETING THE GUIDE
-    const length = this.packages.filter((p) => p.guideId === id).length;
+    const length = await this.packages.filter((p) => p.guideId === id).length;
 
     for (let i = 0; i < length; i++) {
-      const indexOfPackage = this.packages.findIndex((p) => p.guideId === id);
+      const indexOfPackage = await this.packages.findIndex((p) => p.guideId === id);
       packages.splice(indexOfPackage, 1);
     }
 

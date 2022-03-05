@@ -25,15 +25,15 @@ export class PackageService {
     return this.packages.filter((p) => p.guideId === guideId);
   }
 
-  findOneByPackageId(packageId: string): PackageResponseDto {
-    const onePackage = this.packages.find((p) => p.id === packageId);
+  async findOneByPackageId(packageId: string): Promise<PackageResponseDto> {
+    const onePackage = await this.packages.find((p) => p.id === packageId);
 
     if (!onePackage) throw NotFoundException;
 
     return onePackage;
   }
 
-  async update(packageId: string, payload: UpdatePackageDto) {
+  async update(packageId: string, payload: UpdatePackageDto): Promise<PackageResponseDto> {
     const onePackage = await this.findOneByPackageId(packageId);
 
     const newPackage = {
@@ -49,8 +49,13 @@ export class PackageService {
     return packages[indexOfPackage];
   }
 
-  removeByPackageId(PackageId: string) {
-    const indexOfPackage = this.packages.findIndex((p) => p.id === PackageId);
+  async removeByPackageId(PackageId: string) {
+    const indexOfPackage = await this.packages.findIndex((p) => p.id === PackageId);
+
+    if (indexOfPackage === -1) throw NotFoundException;
+
     packages.splice(indexOfPackage, 1);
+
+    return;
   }
 }
