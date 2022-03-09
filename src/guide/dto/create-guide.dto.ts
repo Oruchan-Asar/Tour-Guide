@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsBoolean, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsBoolean, IsString, MinLength, Matches } from 'class-validator';
 
 export class CreateGuideDto {
   @ApiProperty()
@@ -14,12 +14,14 @@ export class CreateGuideDto {
 
   @ApiProperty()
   @IsEmail()
-  @IsNotEmpty()
   email: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @MinLength(5)
   password: string;
+
+  @Matches(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, { message: 'phone must be a valid phone number' })
+  phone: string;
 
   @ApiProperty()
   @IsNotEmpty()
