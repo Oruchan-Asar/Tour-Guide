@@ -8,6 +8,11 @@ export class SignupDto {
   name: string;
 
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  surname: string;
+
+  @ApiProperty()
   @Matches(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, { message: 'phone must be a valid phone number' })
   phone: string;
 
@@ -18,5 +23,15 @@ export class SignupDto {
   @ApiProperty()
   @IsString()
   @MinLength(5)
+  password: string;
+}
+
+export class SigninDto {
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
   password: string;
 }

@@ -16,4 +16,7 @@ export class CreateTravelerDto {
   @IsString()
   @MinLength(5)
   password: string;
+
+  @ApiProperty()
+  phone?: string;
 }

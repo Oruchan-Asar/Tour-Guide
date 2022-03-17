@@ -13,6 +13,7 @@ export class TravelerService {
     const newTraveler = {
       id: uuid(),
       ...payload,
+      createdAt: new Date(),
     };
 
     this.travelers.push(newTraveler);
@@ -30,12 +31,13 @@ export class TravelerService {
     return traveler;
   }
 
-  async update(id: string, payload: UpdateTravelerDto): Promise<TravelerResponseDto> {
+  async update(id: string, payload: CreateTravelerDto): Promise<TravelerResponseDto> {
     const travelerToUpdate = await this.findOne(id);
     const indexOfTraveler = travelers.findIndex((traveler) => (traveler.id = travelerToUpdate.id));
     return (travelers[indexOfTraveler] = {
       id: id,
       ...payload,
+      createdAt: travelerToUpdate.createdAt,
     });
   }
 

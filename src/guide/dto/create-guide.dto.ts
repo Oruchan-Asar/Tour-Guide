@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsBoolean, IsString, MinLength, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, Matches } from 'class-validator';
 
 export class CreateGuideDto {
   @ApiProperty()
@@ -30,17 +30,4 @@ export class CreateGuideDto {
   @ApiProperty({ type: [String] })
   @IsNotEmpty()
   languages: string[];
-
-  // @ApiProperty({ enum: ['Transportation', 'Photograph', 'Accomodation'] })
-  // services: Services[];
-
-  @ApiProperty()
-  @IsBoolean()
-  isReserved: boolean;
-}
-
-export enum Services {
-  Transportation = 'Transportation',
-  Photograph = 'Photograph',
-  Accomodation = 'Accomodation',
 }

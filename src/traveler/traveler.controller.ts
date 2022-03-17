@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Param, Delete, ParseUUIDPipe, Put } from '@nestjs/common';
 import { TravelerService } from './traveler.service';
 import { CreateTravelerDto } from './dto/create-traveler.dto';
-import { UpdateTravelerDto } from './dto/update-traveler.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Traveler')
@@ -25,8 +24,8 @@ export class TravelerController {
   }
 
   @Put(':id')
-  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() updateTravelerDto: UpdateTravelerDto) {
-    return this.travelerService.update(id, updateTravelerDto);
+  update(@Param('id', new ParseUUIDPipe()) id: string, @Body() payload: CreateTravelerDto) {
+    return this.travelerService.update(id, payload);
   }
 
   @Delete(':id')

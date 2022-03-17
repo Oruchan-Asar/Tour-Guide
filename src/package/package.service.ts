@@ -9,7 +9,7 @@ import { PackageResponseDto } from './dto/response-package.dto';
 export class PackageService {
   private packages = packages;
 
-  create(guideId: string, payload: CreatePackageDto): CreatePackageDto {
+  create(guideId: string, payload: CreatePackageDto): PackageResponseDto {
     const newPackage = {
       id: uuid(),
       ...payload,

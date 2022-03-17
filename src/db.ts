@@ -1,3 +1,5 @@
+import { Duration, Tours, Transport } from './package/dto/create-package.dto';
+
 export const guides = [
   {
     id: '1c25025e-b656-11eb-8529-0242ac130003',
@@ -8,8 +10,7 @@ export const guides = [
     phone: '(555) 555 5555',
     location: 'Antalya',
     languages: ['English', 'Turkish'],
-    // services: ['Transportation', 'Photograph'],
-    isReserved: true,
+    createdAt: new Date(),
   },
   {
     id: '1c2504f2-b656-11eb-8529-0242ac130003',
@@ -20,8 +21,7 @@ export const guides = [
     phone: '(555) 555 5555',
     location: 'Izmir',
     languages: ['English', 'German'],
-    // services: ['Transportation'],
-    isReserved: false,
+    createdAt: new Date(),
   },
   {
     id: '1c2505d8-b656-11eb-8529-0242ac130003',
@@ -32,8 +32,7 @@ export const guides = [
     phone: '(555) 555 5555',
     location: 'Ingolstadt',
     languages: ['Russian', 'Turkish'],
-    // services: ['Transportation', 'Photograph'],
-    isReserved: false,
+    createdAt: new Date(),
   },
   {
     id: '1c250696-b656-11eb-8529-0242ac130003',
@@ -44,8 +43,7 @@ export const guides = [
     phone: '(555) 555 5555',
     location: 'Strasbourg',
     languages: ['English', 'Spanish', 'Turkish'],
-    // services: ['Transportation', 'Photograph'],
-    isReserved: false,
+    createdAt: new Date(),
   },
   {
     id: '1c250754-b656-11eb-8529-0242ac130003',
@@ -56,8 +54,7 @@ export const guides = [
     phone: '(555) 555 5555',
     location: 'Bern',
     languages: ['German', 'Spanish'],
-    // services: ['Photograph'],
-    isReserved: true,
+    createdAt: new Date(),
   },
 ];
 
@@ -67,12 +64,14 @@ export const travelers = [
     name: 'Christo',
     surname: 'Robinson',
     password: '45564556',
+    createdAt: new Date(),
   },
   {
     id: '1c250754-b656-11eb-8529-0242ac130003',
     name: 'Antonio',
     surname: 'De La Torre',
     password: '6456454',
+    createdAt: new Date(),
   },
 ];
 
@@ -81,6 +80,9 @@ export const packages = [
     id: '8b99cc2a-7613-4815-a496-59b0a29e5920',
     title: 'Eiffel Tour',
     description: 'See most beautiful side of the Paris',
+    transport: Transport.WALKING,
+    tours: Tours.CITY,
+    duration: Duration.HALF_DAY,
     price: 100,
     guideId: '1c250754-b656-11eb-8529-0242ac130003',
   },
@@ -88,6 +90,9 @@ export const packages = [
     id: 'c672be54-1d56-4a2a-b380-ef78d3cf657d',
     title: 'Alanya Castle Tour',
     description: '',
+    transport: Transport.CAR,
+    tours: Tours.CITY,
+    duration: Duration.LESS_THAN_3_HOURS,
     price: 200,
     guideId: '1c2505d8-b656-11eb-8529-0242ac130003',
   },
@@ -95,6 +100,9 @@ export const packages = [
     id: 'ebd154d8-84d1-40f4-8bd3-796c56bcdd07',
     title: '',
     description: '',
+    transport: Transport.MOTOR,
+    tours: Tours.PHOTO,
+    duration: Duration.HALF_DAY,
     price: 150,
     guideId: '1c250754-b656-11eb-8529-0242ac130003',
   },

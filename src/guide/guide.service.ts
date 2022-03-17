@@ -14,6 +14,7 @@ export class GuideService {
     const newGuide = {
       id: uuid(),
       ...payload,
+      createdAt: new Date(),
     };
 
     this.guides.push(newGuide);
@@ -40,6 +41,7 @@ export class GuideService {
     return (guides[indexOfGuide] = {
       id: id,
       ...payload,
+      createdAt: guideToUpdate.createdAt,
     });
   }
 

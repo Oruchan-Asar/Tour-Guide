@@ -7,4 +7,7 @@ export class TravelerResponseDto extends CreateTravelerDto {
   @IsString()
   @IsNotEmpty()
   id: string;
+
+  @ApiProperty()
+  createdAt: Date;
 }

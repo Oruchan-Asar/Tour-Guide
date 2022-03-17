@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  name              String
+  surname           String
+  email             String    @unique
+  password          String
+  phone             String?
+  location          String?
+  languages         String[]
+  createdAt         DateTime  @default(now())
+  role              Role      @default(Traveler)
+  packages          Package[]
+  messages          Message[]
+  guide_messages    Message[] @relation("guide_messages")
+  traveler_messages Message[] @relation("traveler_messages")
+}
+
+model Package {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  price       Int
+  guideId     String
+  transport   Transport
+  tours       Tours
+  duration    Duration
+  guide       User      @relation(fields: [guideId], references: [id])
+  images      Image[]
+  messages    Message[]
+}
+
+model Image {
+  id        String  @id @default(uuid())
+  url       String
+  packageId String
+  package   Package @relation(fields: [packageId], references: [id])
+}
+
+model Message {
+  id         String  @id @default(uuid())
+  message    String
+  packageId  String
+  package    Package @relation(fields: [packageId], references: [id])
+  guideId    String
+  guide      User    @relation("guide_messages", fields: [guideId], references: [id])
+  travelerId String
+  traveler   User    @relation("traveler_messages", fields: [travelerId], references: [id])
+  User       User?   @relation(fields: [userId], references: [id])
+  userId     String?
+}
+
+enum Transport {
+  WALKING
+  CAR
+  BIKE
+  MOTOR
+  SCOOTER
+  BOAT
+  PUBLIC
+}
+
+enum Tours {
+  CITY
+  DAY
+  NIGHT
+  ART_CULTURE
+  FOOD
+  NATURE
+  PHOTO
+  SHOPPING
+}
+
+enum Duration {
+  LESS_THAN_3_HOURS
+  HALF_DAY
+  FULL_DAY
+}
+
+enum Role {
+  Guide
+  Traveler
+  Admin
+}
