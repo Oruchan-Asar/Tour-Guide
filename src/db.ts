@@ -1,4 +1,4 @@
-import { Duration, Tours, Transport } from './package/dto/create-package.dto';
+import { Transport, Tour, Duration } from '@prisma/client';
 
 export const guides = [
   {
@@ -81,7 +81,7 @@ export const packages = [
     title: 'Eiffel Tour',
     description: 'See most beautiful side of the Paris',
     transport: Transport.WALKING,
-    tours: Tours.CITY,
+    tours: Tour.CITY,
     duration: Duration.HALF_DAY,
     price: 100,
     guideId: '1c250754-b656-11eb-8529-0242ac130003',
@@ -89,9 +89,9 @@ export const packages = [
   {
     id: 'c672be54-1d56-4a2a-b380-ef78d3cf657d',
     title: 'Alanya Castle Tour',
-    description: '',
+    description: 'Description cannot be empty(!)',
     transport: Transport.CAR,
-    tours: Tours.CITY,
+    tours: Tour.CITY,
     duration: Duration.LESS_THAN_3_HOURS,
     price: 200,
     guideId: '1c2505d8-b656-11eb-8529-0242ac130003',
@@ -101,7 +101,7 @@ export const packages = [
     title: '',
     description: '',
     transport: Transport.MOTOR,
-    tours: Tours.PHOTO,
+    tours: Tour.PHOTO,
     duration: Duration.HALF_DAY,
     price: 150,
     guideId: '1c250754-b656-11eb-8529-0242ac130003',
