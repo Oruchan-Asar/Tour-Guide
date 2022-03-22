@@ -1,26 +1,16 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
 import { Role } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { UsersService } from '../users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SigninDto, SignupDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async signup({ name, surname, email, phone, password }: SignupDto) {
-    const userExists = await this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
-    });
+  async signup({ name, surname, email, phone, password }: SignupDto, role: Role) {
+    const userExists = await this.validateUser(email);
 
     if (userExists) {
       throw new HttpException('User already exist!', 409);
@@ -35,28 +25,17 @@ export class AuthService {
         email,
         phone,
         password: hashedPassword,
-        role: Role.Traveler,
+        role: role,
       },
     });
 
-    const token = await jwt.sign(
-      {
-        name,
-        id: user.id,
-      },
-      process.env.JSON_WEB_TOKEN_KEY,
-      { expiresIn: 3600000 },
-    );
+    const token = await this.generateJWT(user.name, user.id);
 
     return token;
   }
 
   async signin({ email, password }: SigninDto) {
-    const user = await this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const user = await this.validateUser(email);
 
     if (!user) throw new HttpException('Invalid email!', 400);
 
@@ -66,29 +45,29 @@ export class AuthService {
 
     if (!isValidPassword) throw new HttpException('Invalid password!', 400);
 
-    const token = await jwt.sign(
+    const token = await this.generateJWT(user.name, user.id);
+
+    return token;
+  }
+
+  async validateUser(email) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    return user;
+  }
+
+  private generateJWT(name: string, id: string) {
+    return jwt.sign(
       {
-        name: user.name,
-        id: user.id,
+        name,
+        id,
       },
       process.env.JSON_WEB_TOKEN_KEY,
-      { expiresIn: 3600000 },
+      { expiresIn: 36000000 },
     );
-  }
-
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
-  }
-
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
   }
 }

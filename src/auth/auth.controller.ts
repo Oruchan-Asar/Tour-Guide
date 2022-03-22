@@ -1,5 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Param, ParseEnumPipe, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Role } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { SigninDto, SignupDto } from './dto/auth.dto';
 
@@ -8,13 +9,13 @@ import { SigninDto, SignupDto } from './dto/auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('signup')
-  signup(@Body() body: SignupDto) {
-    return this.authService.signup(body);
+  @Post('signup/:role')
+  signup(@Body() body: SignupDto, @Param('role', new ParseEnumPipe(Role)) role: Role) {
+    return this.authService.signup(body, role);
   }
 
   @Post('signin')
   signin(@Body() body: SigninDto) {
-    this.authService.signin(body);
+    return this.authService.signin(body);
   }
 }
