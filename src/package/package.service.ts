@@ -1,60 +1,101 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
-import { packages } from 'src/db';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { PackageResponseDto } from './dto/response-package.dto';
+import { Filter } from './interface/filter.interface';
 
 @Injectable()
 export class PackageService {
-  private packages = packages;
+  constructor(private readonly prismaService: PrismaService) {}
 
-  create(guideId: string, payload: CreatePackageDto): PackageResponseDto {
-    const newPackage = {
-      id: uuid(),
-      ...payload,
-      guideId: guideId,
-    };
-
-    this.packages.push(newPackage);
-
-    return newPackage;
+  async create(guideId: string, payload: CreatePackageDto): Promise<PackageResponseDto> {
+    console.log('You are here!');
+    return this.prismaService.package.create({
+      data: {
+        id: uuid(),
+        ...payload,
+        guideId,
+      },
+    });
   }
 
-  findAllByGuideId(guideId: string): PackageResponseDto[] {
-    return this.packages.filter((p) => p.guideId === guideId);
+  async findAllPackages(filters: Filter): Promise<PackageResponseDto[]> {
+    const allPackages = await this.prismaService.package.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        price: true,
+        location: true,
+        transport: true,
+        duration: true,
+        images: {
+          select: {
+            url: true,
+          },
+        },
+      },
+      where: filters,
+    });
+
+    return allPackages.map((pkg) => new PackageResponseDto(pkg));
   }
 
-  async findOneByPackageId(packageId: string): Promise<PackageResponseDto> {
-    const onePackage = await this.packages.find((p) => p.id === packageId);
+  async findAllByGuideId(guideId): Promise<PackageResponseDto[]> {
+    const allPackages = await this.prismaService.package.findMany({
+      where: {
+        guideId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        price: true,
+        transport: true,
+        duration: true,
+        images: {
+          select: {
+            url: true,
+          },
+        },
+      },
+    });
 
-    if (!onePackage) throw NotFoundException;
-
-    return onePackage;
+    return allPackages.map((pkg) => new PackageResponseDto(pkg));
   }
 
-  async update(packageId: string, payload: UpdatePackageDto): Promise<PackageResponseDto> {
-    const onePackage = await this.findOneByPackageId(packageId);
+  async update(id: string, payload: UpdatePackageDto): Promise<PackageResponseDto> {
+    const updatedPackage = await this.prismaService.package.update({
+      where: {
+        id,
+      },
+      data: {
+        id: id,
+        ...payload,
+      },
+    });
 
-    const newPackage = {
-      id: packageId,
-      ...payload,
-      guideId: onePackage.guideId,
-    };
+    if (!updatedPackage) throw new NotFoundException(404, 'Package not found!');
 
-    const indexOfPackage = this.packages.findIndex((p) => p === onePackage);
-
-    packages[indexOfPackage] = newPackage;
-
-    return packages[indexOfPackage];
+    return updatedPackage;
   }
 
-  async removeByPackageId(PackageId: string) {
-    const indexOfPackage = await this.packages.findIndex((p) => p.id === PackageId);
+  async removeByPackageId(id: string) {
+    const firstPackage = await this.prismaService.package.findFirst({
+      where: {
+        id,
+      },
+    });
 
-    if (indexOfPackage === -1) throw NotFoundException;
+    if (!firstPackage) throw NotFoundException;
 
-    packages.splice(indexOfPackage, 1);
+    await this.prismaService.package.delete({
+      where: {
+        id,
+      },
+    });
 
     return;
   }
