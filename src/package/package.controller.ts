@@ -20,7 +20,7 @@ export class PackageController {
   }
 
   @Get()
-  findAllPackages(
+  findAllFilteredPackages(
     @Query('location') location?: string,
     @Query('minPrice') minPrice?: string,
     @Query('maxPrice') maxPrice?: string,
@@ -44,7 +44,7 @@ export class PackageController {
       ...(duration && { duration }),
     };
 
-    return this.packageService.findAllPackages(filters);
+    return this.packageService.findAllFilteredPackages(filters);
   }
 
   @Get(':guideId')

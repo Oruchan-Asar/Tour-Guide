@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Duration, Tour, Transport } from '@prisma/client';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsEnum, IsNotEmpty, IsNumber, IsPositive, IsString, ValidateNested } from 'class-validator';
 
 export class CreatePackageDto {
   @ApiProperty()
@@ -14,6 +15,7 @@ export class CreatePackageDto {
 
   @ApiProperty()
   @IsNumber()
+  @IsPositive()
   price: number;
 
   @ApiProperty()
@@ -21,11 +23,27 @@ export class CreatePackageDto {
   location: string;
 
   @ApiProperty()
+  @IsEnum(Transport)
   transport: Transport;
 
   // @ApiProperty()
+  // @IsEnum(Tour)
   // tour: Tour;
 
   @ApiProperty()
+  @IsEnum(Duration)
   duration: Duration;
+
+  @ApiProperty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Image)
+  images: Image[];
+}
+
+class Image {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  url: string;
 }

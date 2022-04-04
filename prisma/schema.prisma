@@ -28,15 +28,16 @@ model User {
 }
 
 model Package {
-  id          String    @id @default(uuid())
+  id          String    @id @unique @default(uuid())
   title       String
   description String
   price       Int
-  guideId     String
-  transport   Transport
-  tours       Tours
-  duration    Duration
+  location    String
+  transport   Transport @default(WALKING)
+  tour        Tour      @default(CITY)
+  duration    Duration  @default(HALF_DAY)
   guide       User      @relation(fields: [guideId], references: [id])
+  guideId     String
   images      Image[]
   messages    Message[]
 }
@@ -44,8 +45,8 @@ model Package {
 model Image {
   id        String  @id @default(uuid())
   url       String
-  packageId String
   package   Package @relation(fields: [packageId], references: [id])
+  packageId String
 }
 
 model Message {
@@ -53,11 +54,11 @@ model Message {
   message    String
   packageId  String
   package    Package @relation(fields: [packageId], references: [id])
-  guideId    String
   guide      User    @relation("guide_messages", fields: [guideId], references: [id])
-  travelerId String
   traveler   User    @relation("traveler_messages", fields: [travelerId], references: [id])
   User       User?   @relation(fields: [userId], references: [id])
+  guideId    String
+  travelerId String
   userId     String?
 }
 
@@ -68,10 +69,10 @@ enum Transport {
   MOTOR
   SCOOTER
   BOAT
-  PUBLIC
+  PUBLIC_TRANSPORTATION
 }
 
-enum Tours {
+enum Tour {
   CITY
   DAY
   NIGHT
